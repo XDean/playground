@@ -9,19 +9,22 @@ import (
 	"path/filepath"
 )
 
+type PlayParam struct {
+	Type     string   `json:"type"`
+	Language string   `json:"language"`
+	Filename string   `json:"filename"`
+	Args     []string `json:"args"`
+	Content  string   `json:"content" validate:"required"`
+}
+
+type PlayResponse struct {
+	IsError   bool
+	IsCompile bool
+	Text      string
+}
+
 func Play(c echo.Context) error {
-	type Param struct {
-		Language string   `json:"language"`
-		Filename string   `json:"filename"`
-		Args     []string `json:"args"`
-		Content  string   `json:"content" validate:"required"`
-	}
-	type Response struct {
-		IsError   bool
-		IsCompile bool
-		Text      string
-	}
-	param := new(Param)
+	param := new(PlayParam)
 	xecho.MustBindAndValidate(c, param)
 
 	var lang play.Language
@@ -42,6 +45,27 @@ func Play(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	switch param.Type {
+	case "sse":
+		return ssePlay(c, result)
+	default:
+		return simplePlay(c, result)
+	}
+}
+
+func simplePlay(c echo.Context, result play.Result) error {
+	res := make([]play.Line, 0)
+	for {
+		select {
+		case <-result.Done:
+			return c.JSON(http.StatusOK, res)
+		case line := <-result.Output:
+			res = append(res, line)
+		}
+	}
+}
+
+func ssePlay(c echo.Context, result play.Result) error {
 	streamer := sse.New()
 	go streamer.ServeHTTP(c.Response(), c.Request())
 	for {
@@ -49,7 +73,7 @@ func Play(c echo.Context) error {
 		case <-result.Done:
 			return nil
 		case line := <-result.Output:
-			if err := streamer.SendJSON("", "", Response{
+			if err := streamer.SendJSON("", "", PlayResponse{
 				IsError:   line.IsError,
 				IsCompile: line.IsCompile,
 				Text:      line.Text,
