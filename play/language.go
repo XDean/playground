@@ -9,12 +9,13 @@ type (
 
 	Result struct {
 		Output <-chan Line
-		Done   <-chan error
+		Done   <-chan bool
 		Kill   chan<- bool
 	}
 
 	Line struct {
-		IsError bool
-		Text    string
+		IsError   bool
+		IsCompile bool
+		Text      string
 	}
 )

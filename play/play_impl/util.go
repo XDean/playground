@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"unicode/utf8"
@@ -16,8 +17,9 @@ var uniq = make(chan int) // a source of numbers for naming temporary files
 
 type (
 	writer struct {
-		isError bool
-		output  chan play.Line
+		isError   bool
+		isCompile bool
+		output    chan play.Line
 	}
 )
 
@@ -56,22 +58,74 @@ func tempFileWithName(content string, name string) (string, error) {
 	return tf, nil
 }
 
-func stdout(stream chan play.Line) io.Writer {
+func stdout(stream chan play.Line, isCompile bool) io.Writer {
 	return &writer{
-		isError: false,
-		output:  stream,
+		isError:   false,
+		isCompile: isCompile,
+		output:    stream,
 	}
 }
 
-func stderr(stream chan play.Line) io.Writer {
+func stderr(stream chan play.Line, isCompile bool) io.Writer {
 	return &writer{
-		isError: true,
-		output:  stream,
+		isError:   true,
+		isCompile: isCompile,
+		output:    stream,
 	}
+}
+
+func runDirect(codeFile string, args []string, bin string) (res play.Result, err error) {
+	dir, file := filepath.Split(codeFile)
+
+	outputChan := make(chan play.Line, 5)
+	doneChan := make(chan bool)
+	killChan := make(chan bool)
+	res = play.Result{
+		Output: outputChan,
+		Done:   doneChan,
+		Kill:   killChan,
+	}
+
+	cmd := exec.Command(bin, append(args, file)...)
+	cmd.Dir = dir
+	cmd.Stdout = stdout(outputChan, false)
+	cmd.Stderr = stderr(outputChan, false)
+	if err = cmd.Start(); err != nil {
+		return
+	}
+	go func() {
+		defer close(killChan)
+		defer close(doneChan)
+		if err := cmd.Wait(); err != nil {
+			outputChan <- play.Line{
+				IsCompile: false,
+				IsError:   true,
+				Text:      err.Error(),
+			}
+		}
+		doneChan <- true
+	}()
+	go func() {
+		if <-killChan {
+			if err := cmd.Process.Kill(); err != nil {
+				outputChan <- play.Line{
+					IsCompile: false,
+					IsError:   true,
+					Text:      "Fail to kill: " + err.Error(),
+				}
+			}
+			doneChan <- true
+		}
+	}()
+	return
 }
 
 func (w *writer) Write(b []byte) (n int, err error) {
-	w.output <- play.Line{IsError: w.isError, Text: safeString(b)}
+	w.output <- play.Line{
+		IsError:   w.isError,
+		IsCompile: w.isCompile,
+		Text:      safeString(b),
+	}
 	return len(b), nil
 }
 

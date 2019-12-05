@@ -3,6 +3,7 @@ module github.com/XDean/playground
 go 1.12
 
 require (
+	github.com/julienschmidt/sse v0.0.0-20190921213156-72db694fe9e6
 	github.com/labstack/echo/v4 v4.1.6
 	github.com/sirupsen/logrus v1.4.2
 	github.com/urfave/cli v1.22.2

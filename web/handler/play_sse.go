@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"encoding/json"
 	"github.com/XDean/playground/play"
+	"github.com/julienschmidt/sse"
 	"github.com/labstack/echo/v4"
 	"github.com/xdean/goex/xecho"
 	"net/http"
@@ -17,8 +17,9 @@ func Play(c echo.Context) error {
 		Content  string   `json:"content" validate:"required"`
 	}
 	type Response struct {
-		Error bool
-		Text  string
+		IsError   bool
+		IsCompile bool
+		Text      string
 	}
 	param := new(Param)
 	xecho.MustBindAndValidate(c, param)
@@ -41,20 +42,20 @@ func Play(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	c.Response().WriteHeader(http.StatusOK)
+	streamer := sse.New()
+	go streamer.ServeHTTP(c.Response(), c.Request())
 	for {
 		select {
-		case err := <-result.Done:
-			return err
+		case <-result.Done:
+			return nil
 		case line := <-result.Output:
-			if err := json.NewEncoder(c.Response()).Encode(Response{
-				Error: line.IsError,
-				Text:  line.Text,
+			if err := streamer.SendJSON("", "", Response{
+				IsError:   line.IsError,
+				IsCompile: line.IsCompile,
+				Text:      line.Text,
 			}); err != nil {
 				return err
 			}
-			c.Response().Flush()
 		}
 	}
 }
