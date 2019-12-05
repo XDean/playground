@@ -7,6 +7,6 @@ var Inst = Config{
 	},
 	Path: Path{
 		Base:    ".",
-		Content: ".",
+		Content: "output/runtime",
 	},
 }

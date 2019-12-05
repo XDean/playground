@@ -39,3 +39,7 @@ func (p Path) Resources() string {
 func (p Path) Static() string {
 	return filepath.Join(p.Base, "static")
 }
+
+func (p Path) Temp() string {
+	return filepath.Join(p.Content, "temp")
+}
