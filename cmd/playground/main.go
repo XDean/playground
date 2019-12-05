@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/XDean/playground/config"
+	"github.com/XDean/playground/web"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"github.com/xdean/miniboardgame/go/server/web"
 	"log"
 	"os"
 )

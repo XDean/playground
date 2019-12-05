@@ -13,6 +13,7 @@ func Run() {
 	e := echo.New()
 
 	e.HTTPErrorHandler = errorHandler
+	e.Validator = xecho.NewValidator()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

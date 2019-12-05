@@ -8,8 +8,12 @@ type (
 	}
 
 	PlayResult struct {
-		Stdout <-chan string
-		Stderr <-chan string
+		Output <-chan PlayLine
 		Done   <-chan bool
+	}
+
+	PlayLine struct {
+		Error bool
+		Text  string
 	}
 )

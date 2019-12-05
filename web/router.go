@@ -1,7 +1,10 @@
 package web
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/XDean/playground/web/handler"
+	"github.com/labstack/echo/v4"
+)
 
 func initRouter(e *echo.Echo) {
-
+	e.POST("/play", handler.Play)
 }
