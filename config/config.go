@@ -6,8 +6,9 @@ import (
 )
 
 var (
-	Debug     bool
-	SecretKey string
+	Debug      bool
+	ConfigFile string
+	SecretKey  string
 )
 
 type (
