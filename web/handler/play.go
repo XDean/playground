@@ -2,11 +2,16 @@ package handler
 
 import (
 	"github.com/XDean/playground/play"
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/sse"
 	"github.com/labstack/echo/v4"
 	"github.com/xdean/goex/xecho"
 	"net/http"
 	"path/filepath"
+)
+
+var (
+	upgrader = websocket.Upgrader{}
 )
 
 type PlayParam struct {
@@ -48,6 +53,8 @@ func Play(c echo.Context) error {
 	switch param.Type {
 	case "sse":
 		return ssePlay(c, result)
+	case "socket":
+		return socketPlay(c, result)
 	default:
 		return simplePlay(c, result)
 	}
@@ -78,6 +85,23 @@ func ssePlay(c echo.Context, result play.Result) error {
 				IsCompile: line.IsCompile,
 				Text:      line.Text,
 			}); err != nil {
+				return err
+			}
+		}
+	}
+}
+
+func socketPlay(c echo.Context, result play.Result) error {
+	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+	xecho.MustNoError(err)
+	defer ws.Close()
+
+	for {
+		select {
+		case <-result.Done:
+			return nil
+		case line := <-result.Output:
+			if err := ws.WriteJSON(line); err != nil {
 				return err
 			}
 		}

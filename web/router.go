@@ -6,5 +6,5 @@ import (
 )
 
 func initRouter(e *echo.Echo) {
-	e.POST("/play", handler.Play)
+	e.Any("/play", handler.Play)
 }
