@@ -6,6 +6,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/idea.css" rel="stylesheet">
     <script src="static/index.js"></script>
+    <script src="static/play.js"></script>
     <link href="static/index.css" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/clike/clike.min.js"></script>
@@ -26,8 +27,9 @@
 </div>
 <div id="code-area-container">
     <textarea id="code-area"></textarea>
-    <div class="output">
-        <pre>
+    <div id="output" style="display: none;">
+        <a id="output-close" href="javascript:void(0)" onclick="closeOutput()">×</a>
+        <pre id="output-content">
 
         </pre>
     </div>

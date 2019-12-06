@@ -38,7 +38,10 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 	}
 
 	go func() {
-		defer close(doneChan)
+		defer func() {
+			doneChan <- true
+			close(doneChan)
+		}()
 
 		sdir, sfile := filepath.Split(sf)
 		compileCmd := exec.Command("javac", sfile)
@@ -67,7 +70,6 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 			}
 			return
 		}
-		doneChan <- true
 
 		go func() {
 			if <-killChan {
@@ -78,7 +80,6 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 						Text:      "Fail to kill: " + err.Error(),
 					}
 				}
-				doneChan <- true
 			}
 		}()
 	}()

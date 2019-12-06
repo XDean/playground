@@ -25,7 +25,7 @@ body {
     margin-bottom: 7px;
 }
 
-#language-select{
+#language-select {
     min-width: 100px;
     margin-right: 20px;
 }
@@ -43,15 +43,59 @@ body {
     font-size: 15px;
 }
 
-.output {
+#output {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    right: 40px;
-    bottom: 40px;
+    width: 600px;
+    max-width: 40%;
+    height: 500px;
+    max-height: 50%;
+
+    right: 20px;
+    bottom: 20px;
+
     background: #202020;
     padding: 5px 10px;
     z-index: 2;
-
     border-radius: 10px;
+}
+
+#output-close {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+#output-close:hover {
+    color: #f1f1f1;
+}
+
+#output-content {
+    font-family: Consolas， monospace;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.output-compile {
+    text-decoration: underline;
+}
+
+.output-stdout {
+    color: #e6e6e6;
+}
+
+.output-stderr {
+    color: #ffaaaa;
+}
+
+.output-system {
+    color: #ffcc77;
+}
+
+.output-error {
+    color: #ff0000;
 }

@@ -27,9 +27,9 @@ type PlayParam struct {
 }
 
 type PlayResponse struct {
-	IsError   bool
-	IsCompile bool
-	Text      string
+	IsError   bool   `json:"is-error"`
+	IsCompile bool   `json:"is-compile"`
+	Text      string `json:"text"`
 }
 
 func Play(c echo.Context) error {
@@ -49,17 +49,20 @@ func Play(c echo.Context) error {
 
 func simplePlay(c echo.Context, result play.Result) error {
 	defer close(result.Kill)
-	res := make([]play.Line, 0)
+	res := make([]PlayResponse, 0)
 	for {
 		select {
 		case <-c.Request().Context().Done():
 			result.Kill <- true
 			return nil
 		case <-result.Done:
-			result.Kill <- true
 			return c.JSON(http.StatusOK, res)
 		case line := <-result.Output:
-			res = append(res, line)
+			res = append(res, PlayResponse{
+				IsError:   line.IsError,
+				IsCompile: line.IsCompile,
+				Text:      line.Text,
+			})
 		}
 	}
 }
@@ -110,7 +113,11 @@ func SocketPlay(c echo.Context) error {
 		case <-result.Done:
 			return nil
 		case line := <-result.Output:
-			if err := ws.WriteJSON(line); err != nil {
+			if err := ws.WriteJSON(PlayResponse{
+				IsError:   line.IsError,
+				IsCompile: line.IsCompile,
+				Text:      line.Text,
+			}); err != nil {
 				return err
 			}
 		}
