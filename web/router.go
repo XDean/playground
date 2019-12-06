@@ -6,7 +6,9 @@ import (
 )
 
 func initRouter(e *echo.Echo) {
-	e.POST("/play", handler.Play)
+	apiGroup := e.Group("/api")
+	apiGroup.GET("/languages", handler.ShowLanguages)
+	apiGroup.POST("/play", handler.Play)
 
 	socketGroup := e.Group("/socket")
 	socketGroup.GET("/play", handler.SocketPlay)
