@@ -12,7 +12,7 @@ type python struct {
 }
 
 func (p python) Name() string {
-	return "Python"
+	return "python"
 }
 
 func (p python) Ext() []string {

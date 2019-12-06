@@ -14,7 +14,7 @@ type golang struct {
 }
 
 func (j golang) Name() string {
-	return "Go"
+	return "go"
 }
 
 func (j golang) Ext() []string {

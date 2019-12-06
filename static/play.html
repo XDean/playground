@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>XDean's Code Playground</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/idea.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.js"></script>
+    <script src="play.js"></script>
+    <link href="play.css" rel="stylesheet">
+</head>
+<body>
+<div id="header">
+    <label id="title">
+        XDean's Code Playground
+    </label>
+</div>
+<div id="tool-bar">
+    Language:
+    <select id="language-select"></select>
+    <button id="run-button" onclick="run()">Run</button>
+</div>
+<div id="code-area-container">
+    <textarea id="code-area"></textarea>
+</div>
+</body>
+</html>

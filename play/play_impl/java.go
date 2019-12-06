@@ -14,7 +14,7 @@ type java struct {
 }
 
 func (j java) Name() string {
-	return "Java"
+	return "java"
 }
 
 func (j java) Ext() []string {
