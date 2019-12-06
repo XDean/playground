@@ -20,7 +20,7 @@ func initRouter(e *echo.Echo) {
 		return c.Redirect(http.StatusFound, "/index")
 	})
 	e.GET("/index", func(c echo.Context) error {
-		return c.File(filepath.Join(config.Inst.Path.Static(), "play.html"))
+		return c.File(filepath.Join(config.Inst.Path.Static(), "index.html"))
 	})
 	e.Static("/static", config.Inst.Path.Static())
 }
