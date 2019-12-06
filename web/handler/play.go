@@ -11,7 +11,11 @@ import (
 )
 
 var (
-	upgrader = websocket.Upgrader{}
+	upgrader = websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
 )
 
 type PlayParam struct {
@@ -32,29 +36,12 @@ func Play(c echo.Context) error {
 	param := new(PlayParam)
 	xecho.MustBindAndValidate(c, param)
 
-	var lang play.Language
-	if param.Language != "" {
-		lang = play.FindLanguageByName(param.Language)
-	} else if param.Filename != "" {
-		lang = play.FindLanguageByExt(filepath.Ext(param.Filename))
-	} else {
-		return echo.NewHTTPError(http.StatusBadRequest, "Both language and filename are not specified")
-	}
-	if lang == nil {
-		return c.JSON(http.StatusBadRequest, xecho.J{
-			"message":   "Can't detect language. You can follow supported languages.",
-			"supported": play.SupportedLanguageExt(),
-		})
-	}
-	result, err := lang.Run(param.Args, param.Content)
-	if err != nil {
-		return err
-	}
+	result, err := handlePlayParam(c, *param)
+	xecho.MustNoError(err)
+
 	switch param.Type {
 	case "sse":
 		return ssePlay(c, result)
-	case "socket":
-		return socketPlay(c, result)
 	default:
 		return simplePlay(c, result)
 	}
@@ -91,10 +78,17 @@ func ssePlay(c echo.Context, result play.Result) error {
 	}
 }
 
-func socketPlay(c echo.Context, result play.Result) error {
+func SocketPlay(c echo.Context) error {
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	xecho.MustNoError(err)
 	defer ws.Close()
+
+	param := new(PlayParam)
+	err = ws.ReadJSON(param)
+	xecho.MustNoError(err)
+
+	result, err := handlePlayParam(c, *param)
+	xecho.MustNoError(err)
 
 	for {
 		select {
@@ -106,4 +100,22 @@ func socketPlay(c echo.Context, result play.Result) error {
 			}
 		}
 	}
+}
+
+func handlePlayParam(c echo.Context, param PlayParam) (res play.Result, err error) {
+	var lang play.Language
+	if param.Language != "" {
+		lang = play.FindLanguageByName(param.Language)
+	} else if param.Filename != "" {
+		lang = play.FindLanguageByExt(filepath.Ext(param.Filename))
+	} else {
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Both language and filename are not specified")
+	}
+	if lang == nil {
+		return res, c.JSON(http.StatusBadRequest, xecho.J{
+			"message":   "Can't detect language. You can follow supported languages.",
+			"supported": play.SupportedLanguageExt(),
+		})
+	}
+	return lang.Run(param.Args, param.Content)
 }
