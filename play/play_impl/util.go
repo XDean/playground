@@ -94,7 +94,6 @@ func runDirect(codeFile string, args []string, bin string) (res play.Result, err
 		return
 	}
 	go func() {
-		defer close(killChan)
 		defer close(doneChan)
 		if err := cmd.Wait(); err != nil {
 			outputChan <- play.Line{

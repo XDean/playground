@@ -48,10 +48,15 @@ func Play(c echo.Context) error {
 }
 
 func simplePlay(c echo.Context, result play.Result) error {
+	defer close(result.Kill)
 	res := make([]play.Line, 0)
 	for {
 		select {
+		case <-c.Request().Context().Done():
+			result.Kill <- true
+			return nil
 		case <-result.Done:
+			result.Kill <- true
 			return c.JSON(http.StatusOK, res)
 		case line := <-result.Output:
 			res = append(res, line)
@@ -61,7 +66,11 @@ func simplePlay(c echo.Context, result play.Result) error {
 
 func ssePlay(c echo.Context, result play.Result) error {
 	streamer := sse.New()
-	go streamer.ServeHTTP(c.Response(), c.Request())
+	go func() {
+		streamer.ServeHTTP(c.Response(), c.Request())
+		result.Kill <- true
+		close(result.Kill)
+	}()
 	for {
 		select {
 		case <-result.Done:
@@ -89,6 +98,12 @@ func SocketPlay(c echo.Context) error {
 
 	result, err := handlePlayParam(c, *param)
 	xecho.MustNoError(err)
+
+	ws.SetCloseHandler(func(code int, text string) error {
+		result.Kill <- true
+		close(result.Kill)
+		return nil
+	})
 
 	for {
 		select {

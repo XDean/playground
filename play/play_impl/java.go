@@ -38,7 +38,6 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 	}
 
 	go func() {
-		defer close(killChan)
 		defer close(doneChan)
 
 		sdir, sfile := filepath.Split(sf)
