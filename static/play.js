@@ -1,10 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
+  initCodeArea();
   initLanguage();
+}, false);
+
+let codeMirror;
+const codeTypeMap = {
+  "java": "text/x-java",
+};
+
+function initCodeArea() {
   let area = document.getElementById("code-area");
-  let cmArea = CodeMirror.fromTextArea(area, {
+  codeMirror = CodeMirror.fromTextArea(area, {
     lineNumbers: true,
   });
-}, false);
+}
 
 function initLanguage() {
   fetch("api/languages")
@@ -17,10 +26,17 @@ function initLanguage() {
           option.setAttribute("value", e);
           option.innerText = e;
           languageCombo.appendChild(option);
-        })
+        });
+        onLanguageChange(languageCombo);
       })
     })
     .catch(err => {
       console.log(err);
     })
+}
+
+function onLanguageChange(combo) {
+  let lang = combo.value;
+  let type = codeTypeMap[lang];
+  codeMirror.setOption("mode", type || lang);
 }

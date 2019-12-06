@@ -5,9 +5,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/theme/idea.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.js"></script>
     <script src="static/play.js"></script>
     <link href="static/play.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/go/go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
 </head>
 <body>
 <div id="header">
@@ -17,7 +21,7 @@
 </div>
 <div id="tool-bar">
     <label for="language-select">Language:</label>
-    <select id="language-select"></select>
+    <select id="language-select" onchange="onLanguageChange(this)"></select>
     <button id="run-button" onclick="run()">Run</button>
 </div>
 <div id="code-area-container">
