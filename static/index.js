@@ -11,6 +11,7 @@ let codeMirror;
 let outputArea;
 let outputText;
 
+let languages;
 const codeTypeMap = {
   "java": "text/x-java",
 };

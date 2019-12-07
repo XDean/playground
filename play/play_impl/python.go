@@ -19,6 +19,15 @@ func (p python) Ext() []string {
 	return []string{".py"}
 }
 
+func (p python) Data(key play.LanguageDataKey) interface{} {
+	switch key {
+	case play.HelloWorld:
+		return `print("Hello World")`
+	default:
+		return nil
+	}
+}
+
 func (p python) Run(args []string, code string) (res play.Result, err error) {
 	tf, err := tempFile(code, ".py")
 	if err != nil {

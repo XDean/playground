@@ -16,12 +16,20 @@ func Register(language Language) {
 	}
 }
 
-func SupportedLanguageExt() map[string][]string {
-	result := make(map[string][]string)
+func GetAllLanguages() []Language {
+	res := make([]Language, 0)
 	for _, v := range languages {
-		result[v.Name()] = v.Ext()
+		res = append(res, v)
 	}
-	return result
+	return res
+}
+
+func GetAllLanguageNames() []string {
+	res := make([]string, 0)
+	for k, _ := range languages {
+		res = append(res, k)
+	}
+	return res
 }
 
 func FindLanguageByName(name string) Language {

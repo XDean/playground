@@ -13,15 +13,30 @@ func init() {
 type golang struct {
 }
 
-func (j golang) Name() string {
+func (g golang) Name() string {
 	return "go"
 }
 
-func (j golang) Ext() []string {
+func (g golang) Ext() []string {
 	return []string{".go"}
 }
 
-func (j golang) Run(args []string, code string) (res play.Result, err error) {
+func (g golang) Data(key play.LanguageDataKey) interface{} {
+	switch key {
+	case play.HelloWorld:
+		return `package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello World Go")
+}`
+	default:
+		return nil
+	}
+}
+
+func (g golang) Run(args []string, code string) (res play.Result, err error) {
 	sf, err := tempFileWithName(code, "main.go")
 	if err != nil {
 		return

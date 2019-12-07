@@ -21,6 +21,19 @@ func (j java) Ext() []string {
 	return []string{".java"}
 }
 
+func (j java) Data(key play.LanguageDataKey) interface{} {
+	switch key {
+	case play.HelloWorld:
+		return `class Main{
+	public static void main(String[] args) {
+		System.out.println("Hello World Java");
+	}
+}`
+	default:
+		return nil
+	}
+}
+
 func (j java) Run(args []string, code string) (res play.Result, err error) {
 	sf, err := tempFileWithName(code, "Main.java")
 	if err != nil {

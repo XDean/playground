@@ -136,7 +136,7 @@ func handlePlayParam(c echo.Context, param PlayParam) (res play.Result, err erro
 	if lang == nil {
 		return res, c.JSON(http.StatusBadRequest, xecho.J{
 			"message":   "Can't detect language. You can follow supported languages.",
-			"supported": play.SupportedLanguageExt(),
+			"supported": play.GetAllLanguageNames(),
 		})
 	}
 	return lang.Run(param.Args, param.Content)
