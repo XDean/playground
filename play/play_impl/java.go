@@ -38,9 +38,35 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 	}
 
 	go func() {
+		cmdChan := make(chan *exec.Cmd)
+
 		defer func() {
 			doneChan <- true
+			close(cmdChan)
 			close(doneChan)
+			close(outputChan)
+		}()
+
+		go func() {
+			var runningCmd *exec.Cmd
+			for {
+				select {
+				case <-killChan:
+					if runningCmd != nil {
+						if err := runningCmd.Process.Kill(); err != nil {
+							outputChan <- play.Line{
+								IsCompile: false,
+								IsError:   true,
+								Text:      "Fail to kill: " + err.Error(),
+							}
+						}
+					}
+				case runningCmd = <-cmdChan:
+					if runningCmd == nil {
+						return
+					}
+				}
+			}
 		}()
 
 		sdir, sfile := filepath.Split(sf)
@@ -48,6 +74,7 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 		compileCmd.Dir = sdir
 		compileCmd.Stdout = stdout(outputChan, true)
 		compileCmd.Stderr = stderr(outputChan, true)
+		cmdChan <- compileCmd
 		if err = compileCmd.Run(); err != nil {
 			outputChan <- play.Line{
 				IsCompile: true,
@@ -62,6 +89,7 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 		runCmd.Dir = tdir
 		runCmd.Stdout = stdout(outputChan, false)
 		runCmd.Stderr = stderr(outputChan, false)
+		cmdChan <- runCmd
 		if err = runCmd.Run(); err != nil {
 			outputChan <- play.Line{
 				IsCompile: false,
@@ -70,18 +98,6 @@ func (j java) Run(args []string, code string) (res play.Result, err error) {
 			}
 			return
 		}
-
-		go func() {
-			if <-killChan {
-				if err := runCmd.Process.Kill(); err != nil {
-					outputChan <- play.Line{
-						IsCompile: false,
-						IsError:   true,
-						Text:      "Fail to kill: " + err.Error(),
-					}
-				}
-			}
-		}()
 	}()
 	return
 }
