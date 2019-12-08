@@ -2,6 +2,11 @@ document.addEventListener('DOMContentLoaded', function () {
     languageCombo = document.getElementById("language-select");
     outputArea = document.getElementById("output");
     outputText = document.getElementById("output-content");
+    runButton = document.getElementById("run-button");
+    killButton = document.getElementById("kill-button");
+    socketButton = document.getElementById("socket-button");
+
+    initState();
     initCodeArea();
     initLanguage();
 }, false);
@@ -12,12 +17,23 @@ let languageCombo;
 let codeMirror;
 let outputArea;
 let outputText;
+let runButton;
+let killButton;
+let socketButton;
 
-let currentLanguage = null;
+let currentLanguage;
+let currentRunKiller;
+let useSocket = true;
 
 const codeTypeMap = {
     "java": "text/x-java",
 };
+
+function initState() {
+    runButton.disabled = false;
+    killButton.disabled = true;
+    socketButton.checked = useSocket;
+}
 
 function initCodeArea() {
     let area = document.getElementById("code-area");
@@ -53,7 +69,9 @@ function onLanguageChange(combo) {
 function run() {
     outputArea.style.display = "block";
     outputText.innerText = "";
-    socketPlay(serverUrl, new PlayRequest(languageCombo.value, null, null, codeMirror.getValue()), e => {
+    runButton.disabled = true;
+    killButton.disabled = false;
+    currentRunKiller = (useSocket ? socketPlay : httpPlay)(serverUrl, new PlayRequest(languageCombo.value, null, null, codeMirror.getValue()), e => {
         let line = document.createElement("span");
         if (e.isSystem) {
             if (e.isError) {
@@ -73,9 +91,25 @@ function run() {
         }
         line.innerText = e.text;
         outputText.appendChild(line)
+    }, () => {
+        currentRunKiller = null;
+        killButton.disabled = true;
+        runButton.disabled = false;
     }, null)
+}
+
+function kill() {
+    if (currentRunKiller) {
+        currentRunKiller();
+        killButton.disabled = true;
+        runButton.disabled = false;
+    }
 }
 
 function closeOutput() {
     outputArea.style.display = "none";
+}
+
+function switchSocket() {
+    useSocket = !useSocket;
 }

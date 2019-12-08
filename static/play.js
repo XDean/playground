@@ -41,9 +41,10 @@ class PlayLine {
     }
 }
 
-function httpPlay(server /*string*/, request /*PlayRequest*/, outputCallback /*PlayLine=>void*/) /*killCallback void=>void*/ {
+function httpPlay(server /*string*/, request /*PlayRequest*/, outputCallback /*PlayLine=>void*/, exitCallback /*void=>void*/) /*killCallback void=>void*/ {
     let controller = new AbortController();
     let signal = controller.signal;
+    let kill = false;
     outputCallback(PlayLine.system("Program Start\n"));
     fetch(server + "api/play", {
         method: "POST",
@@ -65,19 +66,24 @@ function httpPlay(server /*string*/, request /*PlayRequest*/, outputCallback /*P
                 outputCallback(PlayLine.error(o.cause));
                 outputCallback(PlayLine.system("\nProgram Error\n"));
             }
+            exitCallback();
         })
     }).catch(err => {
-        outputCallback(PlayLine.error(err));
-        outputCallback(PlayLine.system("\nProgram Error\n"));
+        if (!kill) {
+            outputCallback(PlayLine.error(err));
+            outputCallback(PlayLine.system("\nProgram Error\n"));
+            exitCallback();
+        }
     });
     return function () {
+        kill = true;
         outputCallback(PlayLine.system("\nProgram Killed\n"));
         controller.abort();
     }
 }
 
 
-function socketPlay(server /*string*/, request /*PlayRequest*/, outputCallback /*PlayLine=>void*/) /*killCallback void=>void*/ {
+function socketPlay(server /*string*/, request /*PlayRequest*/, outputCallback /*PlayLine=>void*/, exitCallback /*void=>void*/) /*killCallback void=>void*/ {
     if (server.startsWith("http://")) {
         server = "ws://" + server.substring(7);
     }
@@ -91,12 +97,9 @@ function socketPlay(server /*string*/, request /*PlayRequest*/, outputCallback /
     ws.onmessage = e => {
         outputCallback(PlayLine.output(JSON.parse(e.data)));
     };
-    ws.onerror = e => {
-        outputCallback(PlayLine.error(e));
-        outputCallback(PlayLine.system("\nProgram Error\n"));
-    };
     ws.onclose = e => {
         outputCallback(PlayLine.system("\nProgram Exit\n"));
+        exitCallback();
     };
     return function () {
         outputCallback(PlayLine.system("\nProgram Killed\n"));

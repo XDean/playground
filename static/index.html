@@ -25,6 +25,8 @@
     <label for="language-select">Language:</label>
     <select id="language-select" onchange="onLanguageChange(this)"></select>
     <button id="run-button" onclick="run()">Run</button>
+    <button id="kill-button" onclick="kill()">Kill</button>
+    <input id="socket-button" type="checkbox" onchange="switchSocket()">Socket
 </div>
 <div id="code-area-container">
     <textarea id="code-area"></textarea>
