@@ -27,6 +27,7 @@ type PlayParam struct {
 }
 
 type PlayResponse struct {
+	IsSystem  bool   `json:"is-system"`
 	IsError   bool   `json:"is-error"`
 	IsCompile bool   `json:"is-compile"`
 	Text      string `json:"text"`
@@ -94,6 +95,15 @@ func SocketPlay(c echo.Context) error {
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	xecho.MustNoError(err)
 	defer ws.Close()
+	defer func() {
+		if err != nil {
+			_ = ws.WriteJSON(PlayResponse{
+				IsSystem: true,
+				IsError:  true,
+				Text:     err.Error(),
+			})
+		}
+	}()
 
 	param := new(PlayParam)
 	err = ws.ReadJSON(param)

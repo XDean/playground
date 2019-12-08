@@ -6,10 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     initLanguage();
 }, false);
 
+const serverUrl = document.location.href + "/../";
+
 let languageCombo;
 let codeMirror;
 let outputArea;
 let outputText;
+
+let currentLanguage = null;
 
 const codeTypeMap = {
     "java": "text/x-java",
@@ -23,7 +27,7 @@ function initCodeArea() {
 }
 
 function initLanguage() {
-    Language.init("", function (langs) {
+    Language.init(serverUrl, function (langs) {
         langs.forEach(e => {
             let option = document.createElement("option");
             option.setAttribute("value", e.name);
@@ -36,40 +40,36 @@ function initLanguage() {
     });
 }
 
-let oldLanguage = null;
-
 function onLanguageChange(combo) {
     let option = combo.selectedOptions[0];
     codeMirror.setOption("mode", option.language.mime || option.language.name);
     let text = codeMirror.getValue();
-    if (text === "" || (oldLanguage && oldLanguage.helloworld === text)) {
+    if (text === "" || (currentLanguage && currentLanguage.helloworld === text)) {
         codeMirror.setValue(option.language.helloworld)
     }
-    oldLanguage = option.language;
+    currentLanguage = option.language;
 }
 
 function run() {
     outputArea.style.display = "block";
     outputText.innerText = "";
-    httpPlay(new PlayRequest(languageCombo.value, null, null, codeMirror.getValue()), e => {
+    socketPlay(serverUrl, new PlayRequest(languageCombo.value, null, null, codeMirror.getValue()), e => {
         let line = document.createElement("span");
-        switch (e.type) {
-            case type_system:
-                line.classList.add("output-system");
-                break;
-            case type_error:
+        if (e.isSystem) {
+            if (e.isError) {
                 line.classList.add("output-error");
-                break;
-            case type_output:
-                if (e.isError) {
-                    line.classList.add("output-stderr");
-                } else {
-                    line.classList.add("output-stdout")
-                }
-                if (e.isCompile) {
-                    line.classList.add("output-compile");
-                }
-                break;
+            } else {
+                line.classList.add("output-system");
+            }
+        } else {
+            if (e.isError) {
+                line.classList.add("output-stderr");
+            } else {
+                line.classList.add("output-stdout")
+            }
+            if (e.isCompile) {
+                line.classList.add("output-compile");
+            }
         }
         line.innerText = e.text;
         outputText.appendChild(line)
