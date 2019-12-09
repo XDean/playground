@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/XDean/playground/play"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/sse"
@@ -117,7 +118,14 @@ func SocketPlay(c echo.Context) error {
 		close(result.Kill)
 		return nil
 	})
-
+	go func() {
+		for {
+			if _, _, err := ws.NextReader(); err != nil {
+				fmt.Println(err)
+				return
+			}
+		}
+	}()
 	for {
 		select {
 		case <-result.Done:

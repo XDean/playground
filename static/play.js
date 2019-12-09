@@ -91,6 +91,7 @@ function socketPlay(server /*string*/, request /*PlayRequest*/, outputCallback /
         server = "wss://" + server.substring(8);
     }
     let ws = new WebSocket(server + "socket/play");
+    let kill = false;
     ws.onopen = e => {
         ws.send(JSON.stringify(request));
     };
@@ -98,11 +99,14 @@ function socketPlay(server /*string*/, request /*PlayRequest*/, outputCallback /
         outputCallback(PlayLine.output(JSON.parse(e.data)));
     };
     ws.onclose = e => {
-        outputCallback(PlayLine.system("\nProgram Exit\n"));
-        exitCallback();
+        if (!kill) {
+            outputCallback(PlayLine.system("\nProgram Exit\n"));
+            exitCallback();
+        }
     };
     return function () {
         outputCallback(PlayLine.system("\nProgram Killed\n"));
-        ws.close();
+        kill = true;
+        ws.close()
     };
 }
