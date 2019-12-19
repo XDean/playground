@@ -14,8 +14,7 @@ import (
 func main() {
 	app := cli.NewApp()
 
-	app.Name = "Wechat BG Mini Program"
-	app.Usage = "Run XDean Wechat BG Mini Program Server"
+	app.Name = "XDean's Code Playground"
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{

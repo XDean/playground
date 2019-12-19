@@ -1,8 +1,8 @@
 class Lang {
-    constructor(name /*string*/, ext /*[]string*/, helloworld /*string*/) {
+    constructor(name /*string*/, ext /*[]string*/, templates /*map[string]string*/) {
         this.name = name;
         this.ext = ext;
-        this.helloworld = helloworld;
+        this.templates = templates;
     }
 }
 
@@ -14,12 +14,12 @@ function initLanguage(server = "", onSuccess = function (langs) {
     console.log(err);
 }) {
     languages = [];
-    fetch(server + "api/languages")
+    fetch(server + "api/languages?details=true")
         .then(res => {
             res.text().then(body => {
                 let langs = JSON.parse(body);
                 langs.forEach(e => {
-                    languages.push(new Lang(e.name, e.ext, e["hello-world"]))
+                    languages.push(new Lang(e.name, e.ext, e.templates))
                 });
                 onSuccess(languages)
             })
@@ -27,6 +27,10 @@ function initLanguage(server = "", onSuccess = function (langs) {
         .catch(err => {
             onFail(err)
         })
+}
+
+function fetchLanguageTemplates() {
+
 }
 
 let Language = {

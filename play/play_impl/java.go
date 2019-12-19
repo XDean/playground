@@ -21,16 +21,13 @@ func (j java) Ext() []string {
 	return []string{".java"}
 }
 
-func (j java) Data(key play.LanguageDataKey) interface{} {
-	switch key {
-	case play.HelloWorld:
-		return `class Main{
+func (j java) Template() map[string]string {
+	return map[string]string{
+		"Hello World": `class Main{
 	public static void main(String[] args) {
 		System.out.println("Hello World Java");
 	}
-}`
-	default:
-		return nil
+}`,
 	}
 }
 

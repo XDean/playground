@@ -21,18 +21,15 @@ func (g golang) Ext() []string {
 	return []string{".go"}
 }
 
-func (g golang) Data(key play.LanguageDataKey) interface{} {
-	switch key {
-	case play.HelloWorld:
-		return `package main
+func (g golang) Template() map[string]string {
+	return map[string]string{
+		"Hello World": `package main
 
 import "fmt"
 
 func main() {
 	fmt.Println("Hello World Go")
-}`
-	default:
-		return nil
+}`,
 	}
 }
 

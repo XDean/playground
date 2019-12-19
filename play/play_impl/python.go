@@ -19,12 +19,9 @@ func (p python) Ext() []string {
 	return []string{".py"}
 }
 
-func (p python) Data(key play.LanguageDataKey) interface{} {
-	switch key {
-	case play.HelloWorld:
-		return `print("Hello World")`
-	default:
-		return nil
+func (p python) Template() map[string]string {
+	return map[string]string{
+		"Hello World": `print("Hello World")`,
 	}
 }
 
