@@ -23,7 +23,9 @@
 </div>
 <div id="tool-bar">
     <label for="language-select">Language:</label>
-    <select id="language-select" onchange="onLanguageChange(this)"></select>
+    <select id="language-select" onchange="onLanguageChange()"></select>
+    <label for="template-select">Template:</label>
+    <select id="template-select" onchange="onTemplateChange()"></select>
     <button id="run-button" onclick="run()">Run</button>
     <button id="kill-button" onclick="kill()">Kill</button>
     <input id="socket-button" type="checkbox" onchange="switchSocket()">Socket
