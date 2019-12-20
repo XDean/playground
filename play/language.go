@@ -1,7 +1,8 @@
 package play
 
 type (
-	Language interface {
+	Languages []Language
+	Language  interface {
 		Name() string
 		Ext() []string
 		Run(args []string, code string) (Result, error)
@@ -24,8 +25,21 @@ type (
 	Template  struct {
 		Name    string `json:"name"`
 		Content string `json:"content"`
+		Order   int    `json:"-"`
 	}
 )
+
+func (l Languages) Len() int {
+	return len(l)
+}
+
+func (l Languages) Less(i, j int) bool {
+	return l[i].Name() < l[j].Name()
+}
+
+func (l Languages) Swap(i, j int) {
+	l[i], l[j] = l[j], l[i]
+}
 
 func (t Templates) Find(name string) (Template, bool) {
 	for _, v := range t {
@@ -41,7 +55,11 @@ func (t Templates) Len() int {
 }
 
 func (t Templates) Less(i, j int) bool {
-	return t[i].Name < t[j].Name
+	if t[i].Order == t[j].Order {
+		return t[i].Name < t[j].Name
+	} else {
+		return t[i].Order < t[j].Order
+	}
 }
 
 func (t Templates) Swap(i, j int) {

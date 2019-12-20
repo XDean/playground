@@ -16,7 +16,7 @@ func Register(language Language) {
 	}
 }
 
-func GetAllLanguages() []Language {
+func GetAllLanguages() Languages {
 	res := make([]Language, 0)
 	for _, v := range languages {
 		res = append(res, v)

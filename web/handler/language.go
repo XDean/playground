@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/xdean/goex/xecho"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
@@ -17,11 +18,14 @@ func ShowLanguages(c echo.Context) error {
 	details, _ := strconv.ParseBool(c.QueryParam("details"))
 
 	languages := play.GetAllLanguages()
+	sort.Sort(languages)
 	res := make([]Response, 0)
 	for _, v := range languages {
 		var templates interface{}
 		if details {
-			templates = v.Template()
+			ts := v.Template()
+			sort.Sort(ts)
+			templates = ts
 		} else {
 			templates = getTemplateNames(v)
 		}

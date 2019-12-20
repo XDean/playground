@@ -10,7 +10,8 @@ import (
 )
 
 type templateConfig struct {
-	Name string
+	Name  string
+	Order int
 }
 
 var templateStore = make(map[string]play.Templates, 0)
@@ -55,6 +56,7 @@ func readTemplates(lang play.Language) (play.Templates, error) {
 			err = yaml.Unmarshal(configContent, c)
 			if err == nil {
 				tmpl.Name = c.Name
+				tmpl.Order = c.Order
 			}
 		}
 		result = append(result, tmpl)
