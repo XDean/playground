@@ -49,7 +49,7 @@ func GetTemplate(c echo.Context) error {
 			"supported": play.GetAllLanguageNames(),
 		})
 	}
-	if content, ok := lang.Template()[param.Template]; ok {
+	if content, ok := lang.Template().Find(param.Template); ok {
 		return c.JSON(http.StatusOK, xecho.J{
 			"language": param.Language,
 			"name":     param.Template,
@@ -65,8 +65,8 @@ func GetTemplate(c echo.Context) error {
 
 func getTemplateNames(v play.Language) []string {
 	temps := make([]string, 0)
-	for k := range v.Template() {
-		temps = append(temps, k)
+	for _, v := range v.Template() {
+		temps = append(temps, v.Name)
 	}
 	return temps
 }

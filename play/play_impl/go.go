@@ -21,16 +21,8 @@ func (g golang) Ext() []string {
 	return []string{".go"}
 }
 
-func (g golang) Template() map[string]string {
-	return map[string]string{
-		"Hello World": `package main
-
-import "fmt"
-
-func main() {
-	fmt.Println("Hello World Go")
-}`,
-	}
+func (g golang) Template() play.Templates {
+	return getTemplates(g)
 }
 
 func (g golang) Run(args []string, code string) (res play.Result, err error) {

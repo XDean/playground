@@ -21,14 +21,8 @@ func (j java) Ext() []string {
 	return []string{".java"}
 }
 
-func (j java) Template() map[string]string {
-	return map[string]string{
-		"Hello World": `class Main{
-	public static void main(String[] args) {
-		System.out.println("Hello World Java");
-	}
-}`,
-	}
+func (j java) Template() play.Templates {
+	return getTemplates(j)
 }
 
 func (j java) Run(args []string, code string) (res play.Result, err error) {

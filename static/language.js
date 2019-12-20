@@ -1,8 +1,15 @@
 class Lang {
-    constructor(name /*string*/, ext /*[]string*/, templates /*map[string]string*/) {
+    constructor(name /*string*/, ext /*[]string*/, templates /*[]Template*/) {
         this.name = name;
         this.ext = ext;
         this.templates = templates;
+    }
+}
+
+class Template {
+    constructor(name, content) {
+        this.name = name;
+        this.content = content;
     }
 }
 

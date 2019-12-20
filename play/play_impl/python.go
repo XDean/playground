@@ -19,10 +19,8 @@ func (p python) Ext() []string {
 	return []string{".py"}
 }
 
-func (p python) Template() map[string]string {
-	return map[string]string{
-		"Hello World": `print("Hello World")`,
-	}
+func (p python) Template() play.Templates {
+	return getTemplates(p)
 }
 
 func (p python) Run(args []string, code string) (res play.Result, err error) {

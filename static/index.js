@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     customTemplate = document.createElement("option");
     customTemplate.setAttribute("value", "Custom");
     customTemplate.innerText = "Custom";
+    customTemplate.template = {};
 
     initState();
     initCodeArea();
@@ -49,12 +50,12 @@ function initCodeArea() {
         lineNumbers: true,
     });
     codeMirror.on("change", function () {
-        if (!currentLanguage || currentLanguage.templates[currentTemplate] === codeMirror.getValue()) {
+        if (!currentLanguage || currentTemplate.content === codeMirror.getValue()) {
             return;
         }
         currentTemplate = "Custom";
         templateCombo.value = "Custom";
-        customTemplate.templateContent = codeMirror.getValue();
+        customTemplate.template.content = codeMirror.getValue();
     })
 }
 
@@ -77,11 +78,11 @@ function updateTemplateOptions(language) {
 
     templateCombo.appendChild(customTemplate);
 
-    Object.entries(language.templates).forEach(e => {
+    language.templates.forEach(e => {
         let option = document.createElement("option");
-        option.setAttribute("value", e[0]);
-        option.innerText = e[0];
-        option.templateContent = e[1];
+        option.setAttribute("value", e.name);
+        option.innerText = e.name;
+        option.template = e;
         templateCombo.appendChild(option);
     });
 }
@@ -94,20 +95,20 @@ function onLanguageChange() {
     codeMirror.setOption("mode", option.language.mime || option.language.name);
 
     let text = codeMirror.getValue();
-    if (text === "" || (oldLanguage && oldLanguage.templates[currentTemplate] === text)) {
-        let templateName = Object.keys(option.language.templates)[0];
-        if (templateName) {
-            codeMirror.setValue(option.language.templates[templateName]);
-            currentTemplate = templateName;
-            templateCombo.value = currentTemplate;
+    if (text === "" || (oldLanguage && currentTemplate.content === text)) {
+        let newTemplate = option.language.templates[0];
+        if (newTemplate) {
+            currentTemplate = newTemplate;
+            codeMirror.setValue(newTemplate.content);
+            templateCombo.value = currentTemplate.name;
         }
     }
 }
 
 function onTemplateChange() {
     let option = templateCombo.selectedOptions[0];
-    currentTemplate = option.value;
-    codeMirror.setValue(option.templateContent);
+    currentTemplate = option.template;
+    codeMirror.setValue(option.template.content);
 }
 
 function run() {
