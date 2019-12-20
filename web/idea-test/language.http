@@ -1,0 +1,13 @@
+GET http://{{host}}/api/languages
+Accept: application/json
+
+###
+
+GET http://{{host}}/api/languages?details=true
+Accept: application/json
+
+###
+
+GET http://{{host}}/api/template?language=go&template=Hello World
+
+###
