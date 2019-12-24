@@ -18,6 +18,7 @@ func Run() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(xecho.BreakErrorRecover())
+	e.Use(middleware.CORS())
 
 	initRouter(e)
 

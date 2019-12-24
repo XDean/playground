@@ -14,8 +14,10 @@ document.body.appendChild(function component(): Element {
     return element;
 }());
 
+const serverUrl: string = process.env.SERVER_URL || '';
+
 class App extends React.Component {
-    model = new AppModel()
+    model = new AppModel();
 
     render() {
         return <div id="AppRoot">
@@ -31,12 +33,11 @@ class App extends React.Component {
     }
 
     componentDidMount(): void {
-        console.log(process.env.ABC);
-        fetchLanguages("", res => {
+        fetchLanguages(serverUrl, res => {
                 console.debug("Got languages", res)
                 this.model.languages.value = res
             }, err => {
-                console.log("Fail to fetch languages")
+                console.log("Fail to fetch languages", err)
             }
         )
     }

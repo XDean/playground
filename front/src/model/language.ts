@@ -2,19 +2,20 @@ export class Language {
     static EMPTY = new Language("", [], []);
 
     constructor(
-        readonly name: string,
-        readonly ext: string[],
-        readonly templates: Template[],
+        public name: string,
+        public ext: string[],
+        public templates: Template[],
     ) {
     }
 }
 
 export class Template {
-    static EMPTY = new Template("", "");
+    static EMPTY = new Template(Language.EMPTY, "", "");
 
     constructor(
-        readonly name: string,
-        readonly content: string
+        public language: Language,
+        public name: string,
+        public content: string
     ) {
     }
 }
