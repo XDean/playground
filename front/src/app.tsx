@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {AppModel} from "./model/app";
-import {ToolBar} from "./components/ToolBar";
-import {CodeArea} from "./components/CodeArea";
-import {OutputArea} from "./components/OutputArea";
+import {ToolBar} from "./components/tool-bar";
+import {CodeArea} from "./components/code-area";
+import {OutputArea} from "./components/output-area";
 import {fetchLanguages} from "./fetch/language";
 import "./app.css"
 
