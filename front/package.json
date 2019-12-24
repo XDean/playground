@@ -1,0 +1,40 @@
+{
+  "name": "code-playground",
+  "version": "1.0.0",
+  "repository": "https://github.com/XDean/Playground",
+  "author": "XDean",
+  "license": "Apache 2.0",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js --env.NODE_ENV=local --env.production --progress"
+  },
+  "dependencies": {
+    "@types/codemirror": "0.0.72",
+    "@types/react": "^16.9.17",
+    "@types/react-codemirror": "^1.0.3",
+    "@types/react-dom": "^16.9.4",
+    "codemirror": "^5.45.0",
+    "lodash": "^4.17.15",
+    "react": "^16.12.0",
+    "react-codemirror": "^1.0.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.149",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.4.0",
+    "csv-loader": "^3.0.2",
+    "file-loader": "^5.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^1.1.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2",
+    "xml-loader": "^1.2.1"
+  }
+}
