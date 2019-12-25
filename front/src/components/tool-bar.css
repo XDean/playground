@@ -1,0 +1,20 @@
+#tool-bar {
+    display: flex;
+    align-items: baseline;
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+
+#tool-bar * {
+    margin-right: 5px;
+}
+
+#language-select {
+    min-width: 100px;
+    margin-right: 10px;
+}
+
+#template-select {
+    min-width: 100px;
+    margin-right: 20px;
+}

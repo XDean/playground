@@ -1,8 +1,8 @@
 import {Language} from "../model/language";
-import {corsHeader} from "./cors";
+import {corsHeader, resolveUrl} from "./util";
 
 export function fetchLanguages(server: string, onSuccess: (a: Language[]) => void, onFail: (err: string) => void) {
-    fetch(server + "api/languages?details=true", {
+    fetch(resolveUrl(server, "api/languages?details=true"), {
         headers: corsHeader,
     }).then(res => {
         res.text().then(body => {

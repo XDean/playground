@@ -1,11 +1,12 @@
 import {PlayLine, PlayRequest} from "../model/play";
+import {resolveUrl} from "./util";
 
 export function httpPlay(server: string, request: PlayRequest, outputCallback: (l: PlayLine) => void, exitCallback: () => void): () => void {
     let controller = new AbortController();
     let signal = controller.signal;
     let kill = false;
     outputCallback(PlayLine.system("Program Start\n\n"));
-    fetch(server + "api/play", {
+    fetch(resolveUrl(server, "api/play"), {
         method: "POST",
         body: JSON.stringify(request),
         headers: new Headers({
@@ -49,7 +50,7 @@ export function socketPlay(server: string, request: PlayRequest, outputCallback:
     if (server.startsWith("https://")) {
         server = "wss://" + server.substring(8);
     }
-    let ws = new WebSocket(server + "socket/play");
+    let ws = new WebSocket(resolveUrl(server, "socket/play"));
     let kill = false;
     ws.onopen = e => {
         ws.send(JSON.stringify(request));

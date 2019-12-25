@@ -23,5 +23,5 @@ func initRouter(e *echo.Echo) {
 	e.GET("/index", func(c echo.Context) error {
 		return c.File(filepath.Join(config.Inst.Path.Static(), "index.html"))
 	})
-	e.Static("/static", config.Inst.Path.Static())
+	e.Static("/", config.Inst.Path.Static())
 }

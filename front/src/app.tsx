@@ -7,7 +7,7 @@ import {OutputArea} from "./components/output-area";
 import {fetchLanguages} from "./fetch/language";
 import "./app.css"
 
-export const serverUrl: string = process.env.SERVER_URL || '';
+export const serverUrl: string = process.env.SERVER_URL || window.location.origin + window.location.pathname;
 
 document.body.appendChild(function component(): Element {
     const element = document.createElement('div');

@@ -37,7 +37,7 @@ func (p Path) Resources() string {
 }
 
 func (p Path) Static() string {
-	return filepath.Join(p.Base, "static")
+	return filepath.Join(p.Base, "front/dist")
 }
 
 func (p Path) Temp() string {

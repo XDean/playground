@@ -1,6 +1,10 @@
 import * as React from "react";
 import {AppProp} from "../model/app";
 import {Language, Template} from "../model/language";
+import {httpPlay, socketPlay} from "../fetch/play";
+import {serverUrl} from "../app";
+import {PlayLine, PlayRequest} from "../model/play";
+import "./tool-bar.css"
 
 class ToolbarState {
     constructor(
@@ -8,6 +12,7 @@ class ToolbarState {
         readonly language: Language,
         readonly template: Template,
         readonly useSocket: boolean,
+        readonly killer?: () => void
     ) {
     }
 }
@@ -24,16 +29,16 @@ export class ToolBar extends React.Component<AppProp, ToolbarState> {
             props.model.template.value,
             props.model.useSocket.value);
         props.model.languages.addListener((ob, o, n) => {
-            this.setState({languages:n})
+            this.setState({languages: n})
         });
         props.model.language.addListener((ob, o, n) => {
-            this.setState({language:n})
+            this.setState({language: n})
         });
         props.model.template.addListener((ob, o, n) => {
-            this.setState({template:n})
+            this.setState({template: n})
         });
         props.model.useSocket.addListener((ob, o, n) => {
-            this.setState({useSocket:n})
+            this.setState({useSocket: n})
         });
     }
 
@@ -84,14 +89,27 @@ export class ToolBar extends React.Component<AppProp, ToolbarState> {
     };
 
     private run = () => {
-
+        this.props.model.outputContent.update(v => []);
+        this.props.model.showOutput.value = true;
+        let killer = (this.state.useSocket ? socketPlay : httpPlay)
+        (serverUrl, new PlayRequest(this.props.model.codeContent.value, this.state.language.name), (e: PlayLine) => {
+            this.props.model.outputContent.update(v => {
+                v.push(e)
+            });
+        }, () => {
+            this.setState({killer: undefined});
+        });
+        this.setState({killer: killer})
     };
 
     private kill = () => {
-
+        let k = this.state.killer;
+        if (k) {
+            k()
+        }
     };
 
     private switchSocket = () => {
-
+        this.props.model.useSocket.update(v => !v)
     };
 }
