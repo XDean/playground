@@ -1,9 +1,13 @@
 import * as React from "react";
-import {AppModel, AppProp} from "../model/app";
+import {AppProp} from "../model/app";
+import {Language, Template} from "../model/language";
 
 class ToolbarState {
     constructor(
-        readonly model: AppModel
+        readonly languages: Language[],
+        readonly language: Language,
+        readonly template: Template,
+        readonly useSocket: boolean,
     ) {
     }
 }
@@ -14,15 +18,22 @@ export class ToolBar extends React.Component<AppProp, ToolbarState> {
 
     constructor(props: AppProp) {
         super(props);
-        this.state = new ToolbarState(props.model);
+        this.state = new ToolbarState(
+            props.model.languages.value,
+            props.model.language.value,
+            props.model.template.value,
+            props.model.useSocket.value);
         props.model.languages.addListener((ob, o, n) => {
-            this.setState({})
+            this.setState({languages:n})
+        });
+        props.model.language.addListener((ob, o, n) => {
+            this.setState({language:n})
         });
         props.model.template.addListener((ob, o, n) => {
-            this.setState({})
+            this.setState({template:n})
         });
         props.model.useSocket.addListener((ob, o, n) => {
-            this.setState({})
+            this.setState({useSocket:n})
         });
     }
 
@@ -30,25 +41,25 @@ export class ToolBar extends React.Component<AppProp, ToolbarState> {
         return <div id="tool-bar">
             <label htmlFor="language-select">Language:</label>
             <select id="language-select" ref={e => this.languageSelect = e}
-                    onChange={this.onLanguageChange} value={this.props.model.language.value.name}>
+                    onChange={this.onLanguageChange} value={this.state.language.name}>
                 {
-                    this.props.model.languages.value.map(l =>
+                    this.state.languages.map(l =>
                         <option key={l.name} value={l.name}>{l.name}</option>
                     )
                 }
             </select>
             <label htmlFor="template-select">Template:</label>
             <select id="template-select" ref={e => this.templateSelect = e}
-                    onChange={this.onTemplateChange} value={this.props.model.template.value.name}>
+                    onChange={this.onTemplateChange} value={this.state.template.name}>
                 {
-                    this.props.model.language.value.templates.map(t =>
+                    this.state.language.templates.map(t =>
                         <option key={t.name} value={t.name}>{t.name}</option>
                     )
                 }
             </select>
             <button id="run-button" onClick={this.run}>Run</button>
             <button id="kill-button" onClick={this.kill}>Kill</button>
-            <input id="socket-button" type="checkbox" onChange={this.switchSocket}/>Socket
+            <input id="socket-button" type="checkbox" onChange={this.switchSocket} checked={this.state.useSocket}/>Socket
         </div>
     }
 

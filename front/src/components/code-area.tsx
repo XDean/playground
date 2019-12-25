@@ -1,27 +1,63 @@
 import * as React from "react";
+import {RefObject} from "react";
 import {AppProp} from "../model/app";
 
-require('codemirror/lib/codemirror.css');
+import * as codemirror from 'codemirror';
+import {UnControlled as CodeMirror} from 'react-codemirror2'
 
-let CodeMirror = require('react-codemirror');
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/idea.css'
+
+import 'codemirror/mode/clike/clike'
+import 'codemirror/mode/go/go'
+import 'codemirror/mode/python/python'
+import {Language} from "../model/language";
+
+const codeTypeMap: { [key: string]: string } = {
+    "java": "text/x-java"
+};
 
 class CodeAreaState {
-    constructor(public content: string) {
+    constructor(
+        readonly content: string,
+        readonly mode: string,
+        readonly cursor: codemirror.Position | undefined,
+    ) {
     }
 }
 
 export class CodeArea extends React.Component<AppProp, CodeAreaState> {
+    private ref: RefObject<CodeMirror> = {current: null};
+
     constructor(props: AppProp) {
         super(props);
-        this.state = new CodeAreaState(props.model.codeContent.value)
+        this.state = new CodeAreaState(props.model.codeContent.value, this.getMode(props.model.language.value), undefined);
+        props.model.codeContent.addListener((ob, o, n) => {
+            this.setState({content: n})
+        });
+        props.model.language.addListener((ob, o, n) => {
+            this.setState({mode: this.getMode(n)})
+        });
     }
 
     render() {
-        return <CodeMirror value={this.state.content} onChange={(e: string) => this.onCodeUpdate(e)}
-                           options={{lineNumbers: true}}/>
+        return <CodeMirror
+            className="code-area-container"
+            value={this.state.content}
+            onChange={this.onCodeUpdate}
+            cursor={this.state.cursor}
+            options={{
+                lineNumbers: true,
+                mode: this.state.mode,
+            }}/>
     }
 
-    private onCodeUpdate(content: string) {
-        this.props.model.codeContent.value = content;
-    }
+    private onCodeUpdate = (editor: codemirror.Editor, data: codemirror.EditorChange, value: string) => {
+        this.setState({cursor: editor.getCursor()});
+        this.props.model.codeContent.value = value;
+    };
+
+    private getMode = (lang: Language) => {
+        return codeTypeMap[lang.name] || lang.name
+    };
 }

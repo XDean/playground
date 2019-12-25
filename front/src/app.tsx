@@ -7,20 +7,13 @@ import {OutputArea} from "./components/output-area";
 import {fetchLanguages} from "./fetch/language";
 import "./app.css"
 
-
-document.body.appendChild(function component(): Element {
-    const element = document.createElement('div');
-    element.id = "root";
-    return element;
-}());
-
 const serverUrl: string = process.env.SERVER_URL || '';
 
 class App extends React.Component {
     model = new AppModel();
 
     render() {
-        return <div id="AppRoot">
+        return <div id="root">
             <div id="header">
                 <label id="title">
                     XDean's Code Playground
@@ -45,5 +38,5 @@ class App extends React.Component {
 
 ReactDOM.render(
     <App/>,
-    document.getElementById('root')
+    document.getElementsByTagName("body")[0]
 );
