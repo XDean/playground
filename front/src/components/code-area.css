@@ -1,0 +1,12 @@
+.code-area-container {
+    align-content: center;
+    border: black 1px solid;
+    width: 100%;
+    height: 100%;
+}
+
+.CodeMirror {
+    width: 100%;
+    height: 100%;
+    font-size: 15px;
+}

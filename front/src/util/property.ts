@@ -11,11 +11,7 @@ export class Property<T> {
     }
 
     set value(value: T) {
-        const oldValue = this._value;
-        this._value = value;
-        this.listeners.forEach(l => {
-            l(this, oldValue, value);
-        })
+        this.update(v => value);
     }
 
     constructor(defaultValue: T) {
@@ -31,5 +27,16 @@ export class Property<T> {
         if (index != -1) {
             this.listeners.splice(index, 1);
         }
+    }
+
+    update(f: (t: T) => T | void) {
+        const oldValue = this._value;
+        let v = f(this.value);
+        if (v != null) {
+            this._value = v;
+        }
+        this.listeners.forEach(l => {
+            l(this, oldValue, this.value);
+        })
     }
 }

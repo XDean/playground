@@ -1,9 +1,9 @@
 export class PlayRequest {
     constructor(
-        readonly language: string,
-        readonly filename: string,
-        readonly args: string[],
         readonly content: string,
+        readonly language?: string,
+        readonly filename?: string,
+        readonly args?: string[],
     ) {
     }
 }

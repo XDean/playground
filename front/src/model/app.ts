@@ -1,5 +1,6 @@
 import {Property} from "../util/property"
 import {Language, Template} from "./language";
+import {PlayLine} from "./play";
 
 export class AppModel {
     static CUSTOM_TEMPLATE = new Template(Language.EMPTY, "custom", "");
@@ -9,6 +10,8 @@ export class AppModel {
     template = new Property<Template>(Template.EMPTY);
     useSocket = new Property<boolean>(true);
     codeContent = new Property<string>("");
+    outputContent = new Property<PlayLine[]>([]);
+    showOutput = new Property<boolean>(false);
 
     constructor() {
         this.languages.addListener((ob, o, n) => {

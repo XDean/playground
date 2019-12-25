@@ -7,7 +7,14 @@ import {OutputArea} from "./components/output-area";
 import {fetchLanguages} from "./fetch/language";
 import "./app.css"
 
-const serverUrl: string = process.env.SERVER_URL || '';
+export const serverUrl: string = process.env.SERVER_URL || '';
+
+document.body.appendChild(function component(): Element {
+    const element = document.createElement('div');
+    element.id = "render-root";
+    element.className = 'container';
+    return element;
+}());
 
 class App extends React.Component {
     model = new AppModel();
@@ -20,8 +27,10 @@ class App extends React.Component {
                 </label>
             </div>
             <ToolBar model={this.model}/>
-            <CodeArea model={this.model}/>
-            <OutputArea model={this.model}/>
+            <div id="code-output-container">
+                <CodeArea model={this.model}/>
+                <OutputArea model={this.model}/>
+            </div>
         </div>;
     }
 
@@ -38,5 +47,5 @@ class App extends React.Component {
 
 ReactDOM.render(
     <App/>,
-    document.getElementsByTagName("body")[0]
+    document.getElementById('render-root')
 );

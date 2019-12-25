@@ -4,7 +4,7 @@ export function httpPlay(server: string, request: PlayRequest, outputCallback: (
     let controller = new AbortController();
     let signal = controller.signal;
     let kill = false;
-    outputCallback(PlayLine.system("Program Start\n"));
+    outputCallback(PlayLine.system("Program Start\n\n"));
     fetch(server + "api/play", {
         method: "POST",
         body: JSON.stringify(request),
@@ -63,6 +63,7 @@ export function socketPlay(server: string, request: PlayRequest, outputCallback:
             exitCallback();
         }
     };
+    outputCallback(PlayLine.system("Program Start\n\n"));
     return function () {
         outputCallback(PlayLine.system("\nProgram Killed\n"));
         kill = true;

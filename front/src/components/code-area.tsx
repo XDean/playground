@@ -12,6 +12,7 @@ import 'codemirror/mode/clike/clike'
 import 'codemirror/mode/go/go'
 import 'codemirror/mode/python/python'
 import {Language} from "../model/language";
+import "./code-area.css"
 
 const codeTypeMap: { [key: string]: string } = {
     "java": "text/x-java"

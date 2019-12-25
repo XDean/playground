@@ -1,0 +1,60 @@
+#output-container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+#output-content-container {
+    width: 400px;
+    height: 300px;
+    overflow: auto;
+
+    background: #202020;
+    padding: 5px 10px;
+    z-index: 10;
+    border-radius: 10px;
+}
+
+#output-show-container {
+}
+
+#output-close {
+    position: absolute;
+    top: 5px;
+    right: 25px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+#output-close:hover {
+    color: #f1f1f1;
+}
+
+#output-content {
+    font-family: Consolas， monospace;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.output-compile {
+    text-decoration: underline;
+}
+
+.output-stdout {
+    color: #e6e6e6;
+}
+
+.output-stderr {
+    color: #ffaaaa;
+}
+
+.output-system {
+    color: #ffcc77;
+}
+
+.output-error {
+    color: #ff0000;
+}
