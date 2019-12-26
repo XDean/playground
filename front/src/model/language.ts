@@ -15,7 +15,7 @@ export class Template {
     constructor(
         public language: Language,
         public name: string,
-        public content: string
+        public content: string,
     ) {
     }
 }

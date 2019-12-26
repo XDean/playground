@@ -1,10 +1,9 @@
 {
-  "name": "code-playground",
+  "name": "xdean-code-playground",
   "version": "1.0.0",
   "repository": "https://github.com/XDean/Playground",
   "author": "XDean",
-  "license": "Apache 2.0",
-  "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "start": "webpack-dev-server --open --config webpack.dev.js --env.NODE_ENV=local --env.production --progress"

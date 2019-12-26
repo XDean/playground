@@ -3,8 +3,6 @@ import {Language, Template} from "./language";
 import {PlayLine} from "./play";
 
 export class AppModel {
-    static CUSTOM_TEMPLATE = new Template(Language.EMPTY, "custom", "");
-
     languages = new Property<Language[]>([]);
     language = new Property<Language>(Language.EMPTY);
     template = new Property<Template>(Template.EMPTY);
@@ -13,6 +11,8 @@ export class AppModel {
     outputContent = new Property<PlayLine[]>([]);
     showOutput = new Property<boolean>(false);
 
+    customTemplate = new Template(Language.EMPTY, "_custom", "");
+
     constructor() {
         this.languages.addListener((ob, o, n) => {
             if (this.language.value == Language.EMPTY && n.length > 0) {
@@ -20,19 +20,20 @@ export class AppModel {
             }
         });
         this.language.addListener((ob, o, n) => {
-            if (n.templates.length > 0 && (this.codeContent.value === '' || this.codeContent.value === this.template.value.content)) {
+            if (n.templates.length > 0 && this.template.value != this.customTemplate) {
                 this.template.value = n.templates[0]
             }
         });
         this.template.addListener((ob, o, n) => {
-            if (n != AppModel.CUSTOM_TEMPLATE) {
-                this.codeContent.value = n.content;
-            }
+            this.codeContent.value = n.content;
         });
         this.codeContent.addListener((ob, o, n) => {
-            if (this.template.value != AppModel.CUSTOM_TEMPLATE) {
+            if (this.template.value == this.customTemplate) {
+                this.customTemplate.content = n;
+            } else {
                 if (this.template.value.content != n) {
-                    this.template.value = AppModel.CUSTOM_TEMPLATE;
+                    this.customTemplate.content = n;
+                    this.template.value = this.customTemplate;
                 }
             }
         })

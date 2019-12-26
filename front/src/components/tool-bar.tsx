@@ -20,9 +20,11 @@ class ToolbarState {
 export class ToolBar extends React.Component<AppProp, ToolbarState> {
     private languageSelect: HTMLSelectElement | null = null;
     private templateSelect: HTMLSelectElement | null = null;
+    private customName = "";
 
     constructor(props: AppProp) {
         super(props);
+        this.customName = props.model.customTemplate.name;
         this.state = new ToolbarState(
             props.model.languages.value,
             props.model.language.value,
@@ -56,6 +58,7 @@ export class ToolBar extends React.Component<AppProp, ToolbarState> {
             <label htmlFor="template-select">Template:</label>
             <select id="template-select" ref={e => this.templateSelect = e}
                     onChange={this.onTemplateChange} value={this.state.template.name}>
+                <option value={this.customName}>Custom</option>
                 {
                     this.state.language.templates.map(t =>
                         <option key={t.name} value={t.name}>{t.name}</option>
@@ -81,6 +84,9 @@ export class ToolBar extends React.Component<AppProp, ToolbarState> {
     private onTemplateChange = () => {
         if (this.templateSelect != null) {
             let value = this.templateSelect.value;
+            if (value === this.customName) {
+                this.props.model.template.value = this.props.model.customTemplate
+            }
             let find = this.props.model.language.value.templates.find(t => t.name == value);
             if (find) {
                 this.props.model.template.value = find

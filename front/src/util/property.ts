@@ -11,6 +11,9 @@ export class Property<T> {
     }
 
     set value(value: T) {
+        if (this._value == value) {
+            return;
+        }
         this.update(v => value);
     }
 
