@@ -26,7 +26,8 @@ go build -o output/playground github.com/XDean/playground/cmd/playground
 banner
 printf 'Build frontend\n'
 cd front
-npm run build
+yarn install
+yarn run build
 
 banner
 cd $currentpath
