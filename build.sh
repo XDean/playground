@@ -1,7 +1,7 @@
-#!/usr/bin/env sh
+#! /usr/bin/sh
 
 column=`tput cols`
-currentpath = `pwd`
+currentpath=`pwd`
 basepath=`dirname "$0"`
 today=`date '+%y%m%d'`
 
