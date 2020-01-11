@@ -4437,6 +4437,11 @@ ws@^6.2.1:
   dependencies:
     async-limiter "~1.0.0"
 
+xdean-util@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/xdean-util/-/xdean-util-0.0.1.tgz#24c62cfcf846feac5443f5ca21ae26152a19992b"
+  integrity sha512-N9YuCbRbhCiCIfsgW3QHYtxAMjv0SkEMYC1uAAG+x+cap3IgBKKEh8KxrUNKVABZkhUYsCamKvKou9RvVhb18Q==
+
 xml-loader@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/xml-loader/-/xml-loader-1.2.1.tgz#03484da710c44d3610dd36c2af4094b35b4f7975"

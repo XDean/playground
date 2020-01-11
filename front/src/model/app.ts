@@ -1,15 +1,16 @@
-import {Property} from "../util/property"
 import {Language, Template} from "./language";
 import {PlayLine} from "./play";
 
+import {SimpleProperty} from "xdean-util";
+
 export class AppModel {
-    languages = new Property<Language[]>([]);
-    language = new Property<Language>(Language.EMPTY);
-    template = new Property<Template>(Template.EMPTY);
-    useSocket = new Property<boolean>(true);
-    codeContent = new Property<string>("");
-    outputContent = new Property<PlayLine[]>([]);
-    showOutput = new Property<boolean>(false);
+    languages = new SimpleProperty<Language[]>([]);
+    language = new SimpleProperty<Language>(Language.EMPTY);
+    template = new SimpleProperty<Template>(Template.EMPTY);
+    useSocket = new SimpleProperty<boolean>(true);
+    codeContent = new SimpleProperty<string>("");
+    outputContent = new SimpleProperty<PlayLine[]>([]);
+    showOutput = new SimpleProperty<boolean>(false);
 
     customTemplate = new Template(Language.EMPTY, "_custom", "");
 

@@ -16,7 +16,8 @@
     "lodash": "^4.17.15",
     "react": "^16.12.0",
     "react-codemirror2": "^6.0.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "xdean-util": "^0.0.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",
